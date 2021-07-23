@@ -5,7 +5,7 @@ const newMd = require('markdown-it')()
 const DEMOBLOCKTAG = '--demo'
 
 const vitepressPluginDemoBlock = (md, options) => {
-  // console.log('配置项options(暂时都是写死的，后续再看吧123)：', options)
+  // console.log(options)
 
   const shouldFenceToDemoBlock = (tokens, idx) => { // 判断fence是否应该渲染为demo-block
     if (tokens[idx].src && tokens[idx].type === 'fence') {
