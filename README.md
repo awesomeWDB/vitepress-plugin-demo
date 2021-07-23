@@ -5,6 +5,7 @@
 
 **第一种方法（Import Code Snippets）：**
 
+```
 <<< @/demos/index.basic.vue
 --demo 引用vue组件
 
@@ -13,10 +14,12 @@
 
 <<< @/demos/index.basic2.md
 --demo 引用嵌套引用的md文件
+```
 
-**第二种方法（container）：**
-参考element-ui的写法
+**第二种方法（container，参考element-ui的写法）：**
 
+```
 :::demo 这个是另一种写法
 your SFC code here
 :::demo
+```
