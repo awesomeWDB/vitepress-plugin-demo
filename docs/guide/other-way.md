@@ -5,11 +5,16 @@ sidebarDepth: 3
 # 另外一种写法
 
 前面提到了，个人不倾向于在docs中另起文件写demo（naive也是把demo文件和开发文件一起组织的，并没有放在docs下面）。所以借鉴了element-ui的写法，根据markdown-it-container提供了一个demo的container：
+
 ```
 :::demo **这个是另外一种`demo`的写法**
-your code here
+your sfc code here
 :::
 ```
+
+如下图所示：
+
+![An image](../assets/imgs/other-way.jpg)
 
 ## 额外配置的项
 
@@ -44,7 +49,7 @@ your code here
 
 ## 示例
 
-:::demo **这个是另外一种`demo`的写法** 参数2 参数3 参数4
+:::demo **这个是另外一种`demo`的写法**
 ```html
 <template>
   <div>
@@ -71,3 +76,27 @@ export default {
 ## import
 
 这里的实现借助了vite插件：引入一个虚拟文件，没有采用硬编码，这里的import都会正常引入，更加方便的编写demo示例
+
+<!-- 下面是测试 -->
+
+<div class="test" style="display: none;">{{count}},{{count2}}</div>
+
+<script>
+export default {
+  data(){
+    return {
+      count: 123
+    }
+  }
+}
+</script>
+
+<script setup>
+const count2 = 123
+</script>
+
+<style>
+.test{
+  display: none;
+}
+</style>

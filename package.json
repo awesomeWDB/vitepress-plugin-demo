@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-demo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a vitepress plugin to show demo and source code together",
   "keywords": ["vitepress", "vitepress plugin", "demo"],
   "main": "./dist/vitepress-plugin-demo.umd.js",

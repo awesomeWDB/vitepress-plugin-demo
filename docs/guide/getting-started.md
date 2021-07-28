@@ -10,10 +10,13 @@ sidebarDepth: 3
 ```js
 const vitepressPluginDemo = require('vitepress-plugin-demo')
 
-markdown: {
-  config: (md) => {
-    // use more markdown-it plugins!
-    md.use(vitepressPluginDemoBlock)
+module.exports = {
+  ...,
+  markdown: {
+    config: (md) => {
+      // use more markdown-it plugins!
+      md.use(vitepressPluginDemoBlock)
+    }
   }
 }
 ```
@@ -61,3 +64,27 @@ export default {
 
 <<< @/demos/index.basic2.md
 --demo 引用嵌套引用的md文件
+
+<!-- 下面是测试 -->
+
+<div class="test" style="display: none;">{{count}},{{count2}}</div>
+
+<script>
+export default {
+  data(){
+    return {
+      count: 123
+    }
+  }
+}
+</script>
+
+<script setup>
+const count2 = 123
+</script>
+
+<style>
+.test{
+  display: none;
+}
+</style>

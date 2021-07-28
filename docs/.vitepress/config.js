@@ -67,7 +67,8 @@ function getGuideSidebar () {
       children: [
         { text: '前言', link: '/' },
         { text: '开始使用', link: '/guide/getting-started' },
-        { text: '另一种写法', link: '/guide/other-way' }
+        { text: '另一种写法', link: '/guide/other-way' },
+        { text: '注意事项', link: '/guide/attention' }
       ]
     }
   ]

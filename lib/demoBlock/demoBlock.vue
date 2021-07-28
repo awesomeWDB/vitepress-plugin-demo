@@ -14,7 +14,7 @@
       </div>
       <slot name="code" />
     </div>
-    <Sticky
+    <div
       :container="stickyContainer"
       :offset-bottom="0"
       position="bottom"
@@ -27,18 +27,18 @@
           isCodeShow ? "隐藏" : "显示"
         }}</span>
       </div>
-    </Sticky>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import $ from "jquery";
-import Sticky from 'vant/lib/sticky'
+// import Sticky from 'vant/lib/sticky'
 import 'vant/es/sticky/index.css'
 
 export default {
-  components: { Sticky },
+  // components: { Sticky },
   props: {
     description: {
       type: String,

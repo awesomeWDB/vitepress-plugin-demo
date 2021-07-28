@@ -2,7 +2,8 @@ const fs = require('fs')
 const mdContainer = require('markdown-it-container')
 const newMd = require('markdown-it')()
 
-const DEMOBLOCKTAG = '--demo'
+const DEMOBLOCKTAG = '--demo' // 识别的标记
+const INDEX = 10000 // hoistedTags添加的index
 
 const vitepressPluginDemoBlock = (md, options) => {
   // console.log(options)
@@ -48,21 +49,41 @@ const vitepressPluginDemoBlock = (md, options) => {
       ${__demoImports.join('\n')}
     </script>
     `
+    updateHoistedTags() // 同步hoistedTags
   }
 
-  const updateHoistedTags = () => { // 同步：hoistedTags[10000] = data.__demoExportStr
+  const updateHoistedTags = () => { // 同步：hoistedTags[INDEX] = data.__demoExportStr
     // 下面参考自vitepress源码(稍作改动)
     // 主要是vitepress在genPageDataCode(hoistedTags, ...)有自己的一套逻辑，所以我这里需要手动生成script代码、给hoistedTags赋值
     const RE = /^<(script|style)(?=(\s|>|$))/i;
     const data = md.__data;
     const scriptContent = data.__demoExportStr;
     const hoistedTags = data.hoistedTags || (data.hoistedTags = []);
+    const existingSetupScriptIndex = data.__existingSetupScriptIndex
     if (RE.test(scriptContent.trim())) {
       // hoistedTags.push(scriptContent); // 源码是push
-      // 我这里是不断的替换，人为的赋值给10000index，防止多次添加
-      hoistedTags[10000] = scriptContent
+      // 我这里是不断的替换，人为的赋值给INDEXindex，防止多次添加
+      if (existingSetupScriptIndex > -1) { // 再增加一个判断，是否已经存在setup的script标签
+        addImportToExistedSetup(hoistedTags, existingSetupScriptIndex)
+      } else { // 不存在，则使用INDEX
+        hoistedTags[INDEX] = scriptContent
+      }
       // console.log('这里添加/修改了hoistedTags:', hoistedTags)
     }
+  }
+
+  const addImportToExistedSetup = (hoistedTags, index) => {
+    hoistedTags[INDEX] = '' // 先置空，然后重新拼接setup的script
+    const __demoImports = md.__data.__demoImports || (md.__data.__demoImports = [])
+    __demoImports.forEach(importStr => {
+      if (!hoistedTags[index].includes(importStr)) { // 没有包含在内，才进行添加
+        // 替换字符串
+        hoistedTags[index] = hoistedTags[index].replace('</script>', `
+          ${importStr}
+          </script>
+        `)
+      }
+    })
   }
 
   // 设置fence代码块的解析规则
@@ -89,9 +110,9 @@ const vitepressPluginDemoBlock = (md, options) => {
     </demo-block>`
     // 第一种方案，另起文件
     addImportToMd(`import ${componentName} from '${src}'`, md)
-    updateHoistedTags() // 同步hoistedTags
     return result
   }
+
   // 设置text的解析规则
   const defaultTextRender = md.renderer.rules.text
   md.renderer.rules.text = function (tokens, idx, options, env, self) {
@@ -101,7 +122,7 @@ const vitepressPluginDemoBlock = (md, options) => {
     return defaultTextRender(tokens, idx, options, env, self)
   }
 
-  // 提供另外一种写法
+  // 提供另外一种写法（仿照element-ui的demo-container的写法）
   md.use(mdContainer, 'demo', {
     validate (params) {
       return params.trim().match(/^demo\s*(.*)$/)
@@ -115,9 +136,8 @@ const vitepressPluginDemoBlock = (md, options) => {
         // 第二种，源文档进行编辑
         const componentName = genComponentName()
         const encoded = new Buffer.from(content).toString('base64')
-        const importStr = `import ${componentName} from '@vitepress-demo-123-${encoded}.vue'`
+        const importStr = `import ${componentName} from '@vitepress-demo-123-${encoded}.vue'` // 中间的数字就懒得改了
         addImportToMd(importStr, md) // 添加import代码
-        updateHoistedTags() // 同步hoistedTags
         return `<demo-block description="${args[0]}" :args="${JSON.stringify([args]).replace(/"/g, '\'')}" code="${encodeURIComponent(content)}">
           <${componentName} />
           <template #description>
@@ -131,6 +151,37 @@ const vitepressPluginDemoBlock = (md, options) => {
       return '</demo-block>'
     },
   })
+
+  // 兼容页面中有<script setup>或者<script> export default 的一些情况，参考vitepress，可能会有问题
+  const defaultHtmlBlockRender = md.renderer.rules.html_block
+  const HtmlBlockRE = /^<(script|style)(?=(\s|>|$))/i;
+  const scriptRE = /<\/script>/;
+  const scriptSetupRE = /<\s*script[^>]*\bsetup\b[^>]*/;
+  const defaultExportRE = /((?:^|\n|;)\s*)export(\s*)default/;
+  const namedDefaultExportRE = /((?:^|\n|;)\s*)export(.+)as(\s*)default/;
+  md.renderer.rules.html_block = (tokens, idx, options, env, self) => {
+    const content = tokens[idx].content;
+    const data = md.__data;
+    const hoistedTags = data.hoistedTags || (data.hoistedTags = []);
+    if (HtmlBlockRE.test(content.trim())) {
+      defaultHtmlBlockRender(tokens, idx, options, env, self) // 执行默认的渲染策略（vitepress的相关逻辑）
+      // 以下为其他的逻辑
+      let existingSetupScriptIndex
+      hoistedTags.forEach((tag, index) => { // 找到存在setup的script（找到最后的）
+        if (scriptRE.test(tag) && scriptSetupRE.test(tag)) existingSetupScriptIndex = index
+      });
+      existingSetupScriptIndex = existingSetupScriptIndex === INDEX ? -1 : existingSetupScriptIndex
+      data.__existingSetupScriptIndex = existingSetupScriptIndex
+      if (existingSetupScriptIndex > -1) { // 如果存在setup的script
+        // console.log('存在')
+        addImportToExistedSetup(hoistedTags, existingSetupScriptIndex)
+      }
+      // 返回空值
+      return '';
+    } else {
+      return content;
+    }
+  };
 }
 
 export default vitepressPluginDemoBlock
