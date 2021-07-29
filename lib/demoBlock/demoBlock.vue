@@ -12,7 +12,9 @@
       <div class="description">
         <slot name="description"></slot>
       </div>
-      <slot name="code" />
+      <div ref="code">
+        <slot name="code" />
+      </div>
     </div>
     <div
       :container="stickyContainer"
@@ -75,6 +77,17 @@ export default {
       stickyContainer,
       // demoCode,
     };
+  },
+  mounted () {
+    // 添加行号
+    const indexArr = decodeURIComponent(this.code).split('\n').map((item, index) => index + 1)
+    const str = `
+      <div class="line-numbers-wrapper">
+        ${indexArr.map(index => '<span class="line-number">' + index + '</span><br>').join('\n')}
+      </div>
+    `
+    $(this.$refs.code).find('pre').after(str) // 添加行号
+    $(this.$refs.code).find(`div[class*='language-']`).css('paddingLeft', '3.5rem') // 设置padding-left（这样无论是否设置了lineNumbers，都兼容）
   }
 };
 </script>

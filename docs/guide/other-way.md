@@ -6,7 +6,7 @@ sidebarDepth: 3
 
 前面提到了，个人不倾向于在docs中另起文件写demo（naive也是把demo文件和开发文件一起组织的，并没有放在docs下面）。所以借鉴了element-ui的写法，根据markdown-it-container提供了一个demo的container：
 
-```
+```vue
 :::demo **这个是另外一种`demo`的写法**
 your sfc code here
 :::
@@ -45,6 +45,10 @@ your sfc code here
   }
 
   return [vitePressPlugin, vuePlugin, createDemoPlugin()];
+```
+或者为（vitepress-plugin-demo提供了相关的函数，直接引入）：
+```js
+return [vitePressPlugin, vuePlugin, require('vitepress-plugin-demo/lib/virtualFile')()];
 ```
 
 ## 示例

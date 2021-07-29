@@ -43,7 +43,7 @@ export default {
 ## 编写md文件
 **参考[vitepress #import-code-snippets](https://vitepress.vuejs.org/guide/markdown.html#import-code-snippets)扩展了其语法**
 
-```
+```js
 // 注意点：'<<<'的上一行必须要是一个空行（也就是需要另起一行），vitepress才会识别。
 
 <<< @/demos/index.basic.vue
