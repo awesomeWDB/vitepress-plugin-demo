@@ -8,7 +8,7 @@ sidebarDepth: 3
 ```js
 // theme/index.js
 import DefaultTheme from 'vitepress/theme'
-import { enhanceApp } from 'vitepress-plugin-demo/lib'
+import { enhanceApp } from 'vitepress-plugin-demo/lib/index.mjs'
 
 export default {
   ...DefaultTheme,

@@ -27,7 +27,7 @@ module.exports = {
 // 如果需要使用我的demo-block组件来展示样式的话（供测试）
 // 也可以自行实现、注册一个DemoBlock的组件
 import DefaultTheme from 'vitepress/theme'
-import { enhanceApp } from 'vitepress-plugin-demo/lib'
+import { enhanceApp } from 'vitepress-plugin-demo/lib/index.mjs'
 
 export default {
   ...DefaultTheme,

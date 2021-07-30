@@ -15,7 +15,7 @@ module.exports = {
     ]
   },
   markdown: {
-    // lineNumbers: true,
+    lineNumbers: true,
     config: (md) => {
       // use more markdown-it plugins!
       md.use(vitepressPluginDemo)

@@ -1,5 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
-import { enhanceApp } from '../../../lib'
+import { enhanceApp } from '../../../lib/index.mjs'
 
 export default {
   ...DefaultTheme,
