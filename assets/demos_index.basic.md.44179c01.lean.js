@@ -1,0 +1,1 @@
+import{o as t,c as l,b as e}from"./app.a384575a.js";const a='{"title":"","description":"","frontmatter":{},"relativePath":"demos/index.basic.md","lastUpdated":1626763607610}',n={},r=e("ol",null,[e("li",null,"这个是被引入的md文件。"),e("li",null,"正在编辑中..")],-1);n.render=function(e,a,n,i,o,d){return t(),l("div",null,[r])};export default n;export{a as __pageData};

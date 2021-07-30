@@ -1,0 +1,1 @@
+import{o as n,c as s,a}from"./app.a384575a.js";const e='{"title":"hotForceReload强制刷新","description":"","frontmatter":{"sidebarDepth":2},"relativePath":"enhanceApp/use-hot-force-reload.md","lastUpdated":1627622623354}',p={},t=a('',4);p.render=function(a,e,p,o,r,c){return n(),s("div",null,[t])};export default p;export{e as __pageData};
